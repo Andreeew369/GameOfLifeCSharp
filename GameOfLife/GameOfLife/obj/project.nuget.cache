@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "Vn+cNPruwdSyKcPoixBJ38XIvo+Q8t0jDmlD36czW6oCAKhjf2kboRq64f0eUwwxVPu8N921sqXg69zYb1BXbg==",
+  "dgSpecHash": "OAaafAZY3JJqsX7nT3/xiFyxxr+rHaJmdAPK6FWSWx8orXEsBlcCeq3zmg4ToIBOGdz932U9GdFCVEzSy5gTQw==",
   "success": true,
-  "projectFilePath": "C:\\Users\\Andrej\\OneDrive - Žilinská univerzita v Žiline\\Documents\\Coding\\Themes\\GameOfLife\\GameOfLife\\GameOfLife.csproj",
+  "projectFilePath": "C:\\Users\\Andrej\\Desktop\\GameOfLife\\GameOfLife\\GameOfLife.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Andrej\\.nuget\\packages\\monogame.content.builder.task\\3.8.1.303\\monogame.content.builder.task.3.8.1.303.nupkg.sha512",
     "C:\\Users\\Andrej\\.nuget\\packages\\monogame.framework.desktopgl\\3.8.1.303\\monogame.framework.desktopgl.3.8.1.303.nupkg.sha512"
