@@ -1,9 +1,6 @@
-﻿using Microsoft.VisualBasic;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using System;
-using System.Runtime.InteropServices;
 
 namespace GameOfLife;
 
@@ -64,18 +61,21 @@ public class GameOfLife : Game {
         if (currentPState && !_prevPState) {
             this._paused = !this._paused;
         }
-
         _prevPState = currentPState;
+
+
         if (Keyboard.GetState().IsKeyDown(Keys.R) && _paused) {
             this._world.Reset();
         }
         
         MouseState mouseState = Mouse.GetState();
-        if (mouseState.LeftButton == ButtonState.Pressed) {
-            this._world.SetCellState(mouseState.X / Cell.Size, mouseState.Y / Cell.Size, true);   
-        }
-        else if (mouseState.RightButton == ButtonState.Pressed) {
-            this._world.SetCellState(mouseState.X / Cell.Size, mouseState.Y / Cell.Size, false);
+        if (this._paused){
+            if (mouseState.LeftButton == ButtonState.Pressed) {
+                this._world.SetCellState(mouseState.X / Cell.Size, mouseState.Y / Cell.Size, true);
+            }
+            else if (mouseState.RightButton == ButtonState.Pressed) {
+                this._world.SetCellState(mouseState.X / Cell.Size, mouseState.Y / Cell.Size, false);
+            }
         }
 
         _timeElapsed += (float)gameTime.ElapsedGameTime.TotalSeconds;
@@ -106,7 +106,7 @@ public class GameOfLife : Game {
         // TODO: Add your drawing code here
         _spriteBatch.Begin();
 
-        _world.Draw(_spriteBatch);
+        _world.Draw(_spriteBatch, this._paused);
 
         //int mouseX = Mouse.GetState().X;
         //int mouseY = Mouse.GetState().Y;

@@ -4,7 +4,7 @@
   <Platform>DesktopGL</Platform>
   <Config />
   <SourceFiles>
-    <File>C:/Users/Andrej/Desktop/GameOfLife/GameOfLife/Content/ball.png</File>
+    <File>C:/Users/Andrej/OneDrive - Žilinská univerzita v Žiline/Documents/GitHub/GameOfLifeCSharp/GameOfLife/GameOfLife/Content/ball.png</File>
   </SourceFiles>
   <DestFiles>
     <File xsi:nil="true" />

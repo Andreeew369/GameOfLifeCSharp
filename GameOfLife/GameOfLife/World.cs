@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reflection.Metadata.Ecma335;
-using System.Security.Cryptography.X509Certificates;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Color = Microsoft.Xna.Framework.Color;
@@ -12,8 +10,8 @@ namespace GameOfLife;
 public class World {
 
     private Cell[,] _world;
-    private Cell[,] _worldBuffer;
-    private Texture2D _cellTexture;
+    private readonly Cell[,] _worldBuffer;
+    private readonly Texture2D _cellTexture;
 
     public World(GraphicsDevice gd) {
         _cellTexture = new Texture2D(gd, 1, 1);
@@ -27,9 +25,9 @@ public class World {
                 _world[i, j] = new Cell(new Vector2(j, i));
             }
         }
-        _world[2, 2].IsAlive = true;
-        _world[3, 2].IsAlive = true;
-        _world[4, 2].IsAlive = true;
+        //_world[2, 2].IsAlive = true;
+        //_world[3, 2].IsAlive = true;
+        //_world[4, 2].IsAlive = true;
 
 
         _worldBuffer = this.DeepClone(_world);
@@ -76,7 +74,7 @@ public class World {
     }
 
 
-    public void Draw(SpriteBatch sb) {
+    public void Draw(SpriteBatch sb, bool paused) {
         for (int i = 0; i < _world.GetLength(0); i++) {
             for (int j = 0; j < _world.GetLength(1); j++) {
                 Cell cell = _world[i, j];
@@ -86,13 +84,15 @@ public class World {
             }
         }
 
-        Color color = new(new Vector3(78 / 255f, 78 / 255f, 78 / 255f));
-        for (int i = 0; i < _world.GetLength(0); i++) {
-            sb.Draw(_cellTexture, new Rectangle(0,i * Cell.Size, GameOfLife.Width, 1), color);
-        }
+        if (paused) {
+            Color color = new(new Vector3(78 / 255f, 78 / 255f, 78 / 255f));
+            for (int i = 0; i < _world.GetLength(0); i++) {
+                sb.Draw(_cellTexture, new Rectangle(0,i * Cell.Size, GameOfLife.Width, 1), color);
+            }
 
-        for (int i = 0; i < _world.GetLength(1); i++) {
-            sb.Draw(_cellTexture, new Rectangle(i * Cell.Size, 0, 1, GameOfLife.Height), color);
+            for (int i = 0; i < _world.GetLength(1); i++) {
+                sb.Draw(_cellTexture, new Rectangle(i * Cell.Size, 0, 1, GameOfLife.Height), color);
+            }
         }
     }
 

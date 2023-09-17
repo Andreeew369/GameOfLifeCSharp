@@ -11,7 +11,7 @@ public class Program {
     [STAThread]
     static void Main() {
         try {
-            AllocConsole();
+            //AllocConsole();
             using var game = new GameOfLife();
             game.Run();
         }
@@ -20,7 +20,7 @@ public class Program {
             //Console.WriteLine(e.StackTrace);
         }
 
-        Console.WriteLine("Press any key to exit...");
-        Console.ReadKey();
+        //Console.WriteLine("Press any key to exit...");
+        //Console.ReadKey();
     }
 }
