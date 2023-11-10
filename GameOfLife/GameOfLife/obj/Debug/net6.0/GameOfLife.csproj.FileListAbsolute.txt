@@ -75,3 +75,5 @@ C:\Users\Andrej\Desktop\GameOfLife\GameOfLife\obj\Debug\net6.0\refint\GameOfLife
 C:\Users\Andrej\Desktop\GameOfLife\GameOfLife\obj\Debug\net6.0\GameOfLife.pdb
 C:\Users\Andrej\Desktop\GameOfLife\GameOfLife\obj\Debug\net6.0\GameOfLife.genruntimeconfig.cache
 C:\Users\Andrej\Desktop\GameOfLife\GameOfLife\obj\Debug\net6.0\ref\GameOfLife.dll
+C:\Users\Andrej\OneDrive - Žilinská univerzita v Žiline\Documents\GitHub\GameOfLifeCSharp\GameOfLife\GameOfLife\bin\Debug\net6.0\Content\Shaders\Shader.xnb
+C:\Users\Andrej\OneDrive - Žilinská univerzita v Žiline\Documents\GitHub\GameOfLifeCSharp\GameOfLife\GameOfLife\bin\Debug\net6.0\Content\Shader.xnb

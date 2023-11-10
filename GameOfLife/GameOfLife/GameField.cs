@@ -1,28 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Color = Microsoft.Xna.Framework.Color;
 using Vector2 = Microsoft.Xna.Framework.Vector2;
 
 namespace GameOfLife; 
 
-public class World {
+public class GameField {
 
     private Cell[,] _world;
     private readonly Cell[,] _worldBuffer;
-    private readonly Texture2D _cellTexture;
+    private Texture2D _cellTexture;
 
-    public World(GraphicsDevice gd) {
-        _cellTexture = new Texture2D(gd, 1, 1);
-        _cellTexture.SetData(new[] { Color.White });
-        _world = new Cell[GameOfLife.Height / Cell.Size, GameOfLife.Width / Cell.Size];
+    public GameField() {
+
+        _world = new Cell[GameOfLife.Height / Cell.Size - 2, GameOfLife.Width / Cell.Size - 2];
         //_worldBuffer = new Cell[GameOfLife.Height / Cell.Size, GameOfLife.Width / Cell.Size];
         //_world = new Cell[20, 20];
 
         for (int i = 0; i < _world.GetLength(0); i++) {
             for (int j = 0; j < _world.GetLength(1); j++) {
-                _world[i, j] = new Cell(new Vector2(j, i));
+                _world[i, j] = new Cell(new Vector2(j + 1, i + 1));
             }
         }
         //_world[2, 2].IsAlive = true;
@@ -30,9 +30,12 @@ public class World {
         //_world[4, 2].IsAlive = true;
 
 
-        _worldBuffer = this.DeepClone(_world);
+        _worldBuffer = DeepClone(_world);
+    }
 
-
+    public void LoadContent(GraphicsDevice gd,ContentManager cm) {
+        _cellTexture = new Texture2D(gd, 1, 1);
+        _cellTexture.SetData(new[] { Color.White });
     }
 
     public void Update() {
@@ -40,7 +43,6 @@ public class World {
             for (int j = 0; j < _world.GetLength(1); j++) {
                 List<Cell> surroundings = this.GetLivingCells(j, i);
                 Cell cell = _world[i, j];
-                bool wasAlive = cell.IsAlive;
 
                 //if (cell.IsAlive) {
                 //    PrintOutWorldBuffer();
@@ -48,13 +50,12 @@ public class World {
                 if (cell.IsAlive) {
                     if (surroundings.Count != 2 && surroundings.Count != 3) {
                         _worldBuffer[i, j].IsAlive = false;
-                        wasAlive = true;
                     }
                 }
                 else {
                     if (surroundings.Count == 3) {
                         _worldBuffer[i, j].IsAlive = true;
-                        Console.WriteLine(surroundings.Count);
+                        // Console.WriteLine(surroundings.Count);
                     }
                 }
             }
@@ -63,18 +64,18 @@ public class World {
         _world = this.DeepClone(_worldBuffer);
     }
 
-    public void PrintOutWorldBuffer() {
-        for (int i = 0; i < _world.GetLength(0); i++) {
-            for (int j = 0; j < _world.GetLength(1); j++) {
-                Console.Write($"[{_worldBuffer[i, j].IsAlive}] ");
-            }
-
-            Console.WriteLine();
-        }
-    }
+    //public void PrintOutWorldBuffer() {
+    //    for (int i = 0; i < _world.GetLength(0); i++) {
+    //        for (int j = 0; j < _world.GetLength(1); j++) {
+    //            Console.Write($"[{_worldBuffer[i, j].IsAlive}] ");
+    //        }
+    //        Console.WriteLine();
+    //    }
+    //}
 
 
     public void Draw(SpriteBatch sb, bool paused) {
+        sb.Begin();
         for (int i = 0; i < _world.GetLength(0); i++) {
             for (int j = 0; j < _world.GetLength(1); j++) {
                 Cell cell = _world[i, j];
@@ -83,17 +84,17 @@ public class World {
                 }
             }
         }
-
         if (paused) {
             Color color = new(new Vector3(78 / 255f, 78 / 255f, 78 / 255f));
-            for (int i = 0; i < _world.GetLength(0); i++) {
-                sb.Draw(_cellTexture, new Rectangle(0,i * Cell.Size, GameOfLife.Width, 1), color);
+            for (int i = 0; i <= _world.GetLength(0); i++) {
+                sb.Draw(_cellTexture, new Rectangle(Cell.Size,i * Cell.Size + Cell.Size, _world.GetLength(1) * Cell.Size, 1), color);
             }
 
-            for (int i = 0; i < _world.GetLength(1); i++) {
-                sb.Draw(_cellTexture, new Rectangle(i * Cell.Size, 0, 1, GameOfLife.Height), color);
+            for (int i = 0; i <= _world.GetLength(1); i++) {
+                sb.Draw(_cellTexture, new Rectangle(i * Cell.Size + Cell.Size, Cell.Size, 1, _world.GetLength(0) * Cell.Size), color);
             }
         }
+        sb.End();
     }
 
     public List<Cell> GetLivingCells(int indexX, int indexY) {
@@ -156,33 +157,8 @@ public class World {
         _world[indexY, indexX].IsAlive = isAlive;
         _worldBuffer[indexY, indexX].IsAlive = isAlive;
     }
-}
 
-public class Cell {
-
-    public const int Size = 16;
-
-    public bool IsAlive { get; set; }
-    private Vector2 Possition { get; }
-    private Vector2 Indexes { get; }
-
-    public Cell(Vector2 indexes) {
-        IsAlive = false;
-        Indexes = indexes;
-        Possition = new Vector2(indexes.X * Size, indexes.Y * Size);
-    }
-
-    public Cell(Vector2 indexes, bool isAlive) {
-        IsAlive = isAlive;
-        Indexes = indexes;
-        Possition = new Vector2(indexes.X * Size, indexes.Y * Size);
-    }
-
-    public void Draw(SpriteBatch sb, Texture2D texture) {
-        sb.Draw(texture, new Rectangle((int)Possition.X, (int)Possition.Y, Size, Size), Color.White);
-    }
-
-    public Cell Clone() {
-        return new Cell(Indexes, IsAlive);
+    public void Unload() {
+        _cellTexture.Dispose();
     }
 }

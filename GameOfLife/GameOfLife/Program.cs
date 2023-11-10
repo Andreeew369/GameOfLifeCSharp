@@ -4,14 +4,14 @@ using System.Runtime.InteropServices;
 namespace GameOfLife; 
 
 public class Program {
-    [DllImport("kernel32.dll", SetLastError = true)]
-    [return: MarshalAs(UnmanagedType.Bool)]
-    private static extern bool AllocConsole();
+    // [DllImport("kernel32.dll", SetLastError = true)]
+    // [return: MarshalAs(UnmanagedType.Bool)]
+    // private static extern bool AllocConsole();
 
     [STAThread]
     static void Main() {
         try {
-            //AllocConsole();
+            // AllocConsole();
             using var game = new GameOfLife();
             game.Run();
         }
@@ -20,7 +20,7 @@ public class Program {
             //Console.WriteLine(e.StackTrace);
         }
 
-        //Console.WriteLine("Press any key to exit...");
-        //Console.ReadKey();
+        // Console.WriteLine("Press any key to exit...");
+        // Console.ReadKey();
     }
 }
