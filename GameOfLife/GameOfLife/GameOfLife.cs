@@ -47,8 +47,7 @@ public class GameOfLife : Game {
     protected override void LoadContent() {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
         _gameField.LoadContent(GraphicsDevice, Content);
-        _menuBar.LoadContent(GraphicsDevice, Content);
-        // TODO: use this.Content to load your game content here
+        _menuBar.LoadContent(GraphicsDevice);
     }
 
     protected override void Update(GameTime gameTime) {
@@ -117,7 +116,7 @@ public class GameOfLife : Game {
 
         _gameField.Draw(_spriteBatch, this._paused);
         if (_paused) {
-            _menuBar.Draw(_spriteBatch);
+            _menuBar.Draw(_spriteBatch, GraphicsDevice);
         }
         
         // _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
