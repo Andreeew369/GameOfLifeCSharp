@@ -8,14 +8,17 @@ using Vector2 = Microsoft.Xna.Framework.Vector2;
 namespace GameOfLife; 
 
 public class GameField {
-
+    
+    public const int Height = GameOfLife.Height / Cell.Size - 2;
+    public const int Width =  GameOfLife.Width / Cell.Size - 2;
     private Cell[,] _world;
+    
     private readonly Cell[,] _worldBuffer;
     private Texture2D _cellTexture;
 
     public GameField() {
 
-        _world = new Cell[GameOfLife.Height / Cell.Size - 2, GameOfLife.Width / Cell.Size - 2];
+        _world = new Cell[Height, Width];
         //_worldBuffer = new Cell[GameOfLife.Height / Cell.Size, GameOfLife.Width / Cell.Size];
         //_world = new Cell[20, 20];
 

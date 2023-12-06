@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
@@ -11,14 +12,17 @@ public class GameOfLife : Game {
 
     public const int Width = 1600;
     public const int Height = 900;
+    public static readonly Rectangle Bounds = new(Cell.Size, Cell.Size, Width - 2 * Cell.Size, Height - 2 * Cell.Size);  
     private GraphicsDeviceManager _graphics;
     private SpriteBatch _spriteBatch;
     private GameField _gameField;
     private MenuBar _menuBar;
+    private Cursor _cursor;
 
     private bool _clickedOnMenu = false;
     private bool _paused = true;
     private bool _prevPState = false;
+
     private float _timeElapsed = 0f;
     private const float UpdateInterval = 0.35f;
 
@@ -32,7 +36,18 @@ public class GameOfLife : Game {
         _graphics.PreferredBackBufferHeight = Height;
         _gameField = new GameField();
         _menuBar = new MenuBar(0, Height, Width, Height / 3);
+        _cursor = new Cursor();
 
+        // Random rand = new Random();
+        // int[,] array = new int[5,5];
+        // for (int i = 0; i < 5; i++) {
+        //     for (int j = 0; j < 5; j++) {
+        //         array[i, j] = rand.Next(10);
+        //         Console.Write(array[i,j] + " ");
+        //     }
+        //     Console.WriteLine();
+        // }
+        // Console.WriteLine();
         //Window.AllowUserResizing = true;
     }
 
@@ -56,24 +71,25 @@ public class GameOfLife : Game {
             return;
         }
         
+        _cursor.Update();
+        
         if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed ||
             Keyboard.GetState().IsKeyDown(Keys.Escape))
             Exit();
 
         bool currentPState = Keyboard.GetState().IsKeyDown(Keys.P);
-
         // Check if the P key has just been pressed (not held down)
         if (currentPState && !_prevPState) {
             this._paused = !this._paused;
         }
         _prevPState = currentPState;
 
-
+            
         if (Keyboard.GetState().IsKeyDown(Keys.R) && _paused) {
             this._gameField.Reset();
         }
 
-        MouseState mouseState = Mouse.GetState();
+        MouseState mouseState = _cursor.MState;
         var mousePos = mouseState.Position;
         if (_paused) {
             _clickedOnMenu = _clickedOnMenu ||
@@ -81,17 +97,25 @@ public class GameOfLife : Game {
                               _menuBar.IsInside(mousePos));
             
             if (mouseState.LeftButton == ButtonState.Pressed && !_clickedOnMenu) {
-                _gameField.SetCellState(mouseState.X / Cell.Size - 1, mouseState.Y / Cell.Size - 1, true);
+                // _gameField.SetCellState(mouseState.X / Cell.Size - 1, mouseState.Y / Cell.Size - 1, true);
+                _cursor.PlaceShape(_gameField);
             }
             else if (mouseState.RightButton == ButtonState.Pressed && !_clickedOnMenu) {
-                _gameField.SetCellState(mouseState.X / Cell.Size - 1, mouseState.Y / Cell.Size - 1, false);
+                if (_cursor.HoldingShape is not Shape.Cell) {
+                    _cursor.HoldingShape = Shape.Cell;
+                }
+                else {
+                    _gameField.SetCellState(mouseState.X / Cell.Size - 1, mouseState.Y / Cell.Size - 1, false);
+                }
             }
 
             if (_clickedOnMenu && mouseState is { LeftButton: ButtonState.Released, RightButton: ButtonState.Released }) {
                 _clickedOnMenu = false;
             }
+            
+            
         }
-        _menuBar.Update(_paused);
+        _menuBar.Update(_paused, _cursor);
 
 
         _timeElapsed += (float)gameTime.ElapsedGameTime.TotalSeconds;
@@ -102,8 +126,6 @@ public class GameOfLife : Game {
             _timeElapsed = 0.0f; // Reset the timer
         }
         
-
-
         // TODO: Add your update logic here
 
         base.Update(gameTime);
@@ -117,7 +139,9 @@ public class GameOfLife : Game {
         _gameField.Draw(_spriteBatch, this._paused);
         if (_paused) {
             _menuBar.Draw(_spriteBatch, GraphicsDevice);
+            _cursor.Draw(_spriteBatch, GraphicsDevice);
         }
+        
         
         // _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
         // _spriteBatch.Draw(Shape.Glider.GetTextureForMenu(GraphicsDevice),
