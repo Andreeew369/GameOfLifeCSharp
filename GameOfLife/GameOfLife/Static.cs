@@ -1,6 +1,5 @@
 using System;
 using System.Linq;
-using System.Security;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Color = Microsoft.Xna.Framework.Color;
@@ -24,44 +23,102 @@ public static class Func {
         return CenterArray(shape switch {
             Shape.Cell => new[,] { { 1 } },
             Shape.Glider => new[,] {
-                { 0, 0, 1 },
-                { 1, 0, 1 },
-                { 0, 1, 1 }
+                { 0, 0, 1},
+                { 1, 0, 1},
+                { 0, 1, 1}
             },
-            Shape.LWSS => throw new NotImplementedException(),
-            Shape.MWSS => throw new NotImplementedException(),
-            Shape.HWSS => throw new NotImplementedException(),
+            Shape.LWSS => new [,] {
+                {1, 0, 0, 1, 0},
+                {0, 0, 0, 0, 1},
+                {1, 0, 0, 0, 1},
+                {0, 1, 1, 1, 1}
+            },
+            Shape.MWSS =>  new [,] {
+                {0, 0, 1, 0, 0, 0},
+                {1, 0, 0, 0, 1, 0},
+                {0, 0, 0, 0, 0, 1},
+                {1, 0, 0, 0, 0, 1},
+                {0, 1, 1, 1, 1, 1}
+            },
+            Shape.HWSS => new [,] {
+                {0, 0, 1, 1, 0, 0, 0},
+                {1, 0, 0, 0, 0, 1, 0},
+                {0, 0, 0, 0, 0, 0, 1},
+                {1, 0, 0, 0, 0, 0, 1},
+                {0, 1, 1, 1, 1, 1, 1}
+            },
             Shape.SpaceShip => new[,] {
-                { 0, 1, 1, 0, 0, 1, 1, 0 },
-                { 0, 0, 0, 1, 1, 0, 0, 0 },
-                { 0, 0, 0, 1, 1, 0, 0, 0 },
-                { 1, 0, 1, 0, 0, 1, 0, 1 },
-                { 1, 0, 0, 0, 0, 0, 0, 1 },
-                { 0, 0, 0, 0, 0, 0, 0, 0 },
-                { 1, 0, 0, 0, 0, 0, 0, 1 },
-                { 0, 1, 1, 0, 0, 1, 1, 0 },
-                { 0, 0, 1, 1, 1, 1, 0, 0 },
-                { 0, 0, 0, 0, 0, 0, 0, 0 },
-                { 0, 0, 0, 1, 1, 0, 0, 0 },
-                { 0, 0, 0, 1, 1, 0, 0, 0 },
+                { 0, 1, 1, 0, 0, 1, 1, 0},
+                { 0, 0, 0, 1, 1, 0, 0, 0},
+                { 0, 0, 0, 1, 1, 0, 0, 0},
+                { 1, 0, 1, 0, 0, 1, 0, 1},
+                { 1, 0, 0, 0, 0, 0, 0, 1},
+                { 0, 0, 0, 0, 0, 0, 0, 0},
+                { 1, 0, 0, 0, 0, 0, 0, 1},
+                { 0, 1, 1, 0, 0, 1, 1, 0},
+                { 0, 0, 1, 1, 1, 1, 0, 0},
+                { 0, 0, 0, 0, 0, 0, 0, 0},
+                { 0, 0, 0, 1, 1, 0, 0, 0},
+                { 0, 0, 0, 1, 1, 0, 0, 0}
+            },
+            Shape.GosperGliderGun => new [,] {
+                {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0},
+                {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0},
+                {0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1},
+                {0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1},
+                {1,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+                {1,1,0,0,0,0,0,0,0,0,1,0,0,0,1,0,1,1,0,0,0,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0},
+                {0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0},
+                {0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+                {0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+            },
+            Shape.SimkinGliderGun => new [,] {
+                {1,1,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+                {1,1,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+                {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+                {0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+                {0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+                {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+                {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+                {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+                {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+                {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,1,1,0,0,0,0,0,0},
+                {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0,0,0},
+                {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,1,1},
+                {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,1,0,0,0,1,1},
+                {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0},
+                {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+                {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+                {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+                {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0},
+                {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0},
+                {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0},
+                {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0},
             },
 
             _ => throw new NotImplementedException()
         }, minSize);
     }
 
-    public static T RotateMatrix<T>(T[,] array, bool clockwise) {
+    public static T[,] RotateArray<T>(T[,] array, bool clockwise) {
+        if (array.GetLength(0) != array.GetLength(1)) {
+            throw new ArgumentException("array must have same height and width");
+        }
+
         T[,] rotated = new T[array.GetLength(0), array.GetLength(1)];
         
         for (int y = 0; y < array.GetLength(0); y++) {
             for (int x = 0; x < array.GetLength(1); x++) {
                 if (clockwise) {
-                    throw new NotImplementedException();
+                    rotated[y, x] = array[array.GetLength(0) - x - 1, y];
+                }
+                else {
+                    rotated[y, x] = array[x, array.GetLength(0) - y - 1];
                 }
             }
         }
 
-        throw new NotImplementedException();
+        return rotated;
     }
 
     public static void DrawHollowRectangle(Rectangle rectangle, int thickness, Color color, SpriteBatch sb, GraphicsDevice gd) {
@@ -149,6 +206,19 @@ public static class Func {
         return flipedArray;
     }
 
+    public static void DrawTriangle(Color color, Vector2 v1, Vector2 v2, Vector2 v3, SpriteBatch sb) {
+        sb.GraphicsDevice.DrawUserPrimitives(
+            primitiveType: PrimitiveType.TriangleList,
+            vertexData: new VertexPositionColor[] {
+                new(new Vector3(v1, 0f), color),
+                new(new Vector3(v2, 0f), color),
+                new(new Vector3(v3, 0f), color),
+            },
+            vertexOffset: 0,
+            primitiveCount: 1
+        );
+    }
+
     public static bool OutOfBoundsCheck<T>(T[,] array, int x, int y) {
         return OutOfBoundsCheck(x, y, array.GetLength(0), array.GetLength(1));
     }
@@ -163,5 +233,5 @@ public static class Func {
 }
 
 public enum Shape {
-    Cell, Glider, LWSS, MWSS, HWSS, SpaceShip
+    Cell, Glider, LWSS, MWSS, HWSS, SpaceShip, GosperGliderGun, SimkinGliderGun
 }

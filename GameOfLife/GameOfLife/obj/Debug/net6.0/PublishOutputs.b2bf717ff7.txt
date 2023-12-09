@@ -1,0 +1,17 @@
+C:\Users\Andrej\OneDrive - Žilinská univerzita v Žiline\Documents\GitHub\GameOfLifeCSharp\Release\GameOfLife.exe
+C:\Users\Andrej\OneDrive - Žilinská univerzita v Žiline\Documents\GitHub\GameOfLifeCSharp\Release\Content/ball.xnb
+C:\Users\Andrej\OneDrive - Žilinská univerzita v Žiline\Documents\GitHub\GameOfLifeCSharp\Release\Content/Shader.xnb
+C:\Users\Andrej\OneDrive - Žilinská univerzita v Žiline\Documents\GitHub\GameOfLifeCSharp\Release\Content/Shaders\Shader.xnb
+C:\Users\Andrej\OneDrive - Žilinská univerzita v Žiline\Documents\GitHub\GameOfLifeCSharp\Release\GameOfLife.dll
+C:\Users\Andrej\OneDrive - Žilinská univerzita v Žiline\Documents\GitHub\GameOfLifeCSharp\Release\GameOfLife.deps.json
+C:\Users\Andrej\OneDrive - Žilinská univerzita v Žiline\Documents\GitHub\GameOfLifeCSharp\Release\GameOfLife.runtimeconfig.json
+C:\Users\Andrej\OneDrive - Žilinská univerzita v Žiline\Documents\GitHub\GameOfLifeCSharp\Release\GameOfLife.pdb
+C:\Users\Andrej\OneDrive - Žilinská univerzita v Žiline\Documents\GitHub\GameOfLifeCSharp\Release\MonoGame.Framework.dll
+C:\Users\Andrej\OneDrive - Žilinská univerzita v Žiline\Documents\GitHub\GameOfLifeCSharp\Release\runtimes\linux-x64\native\libSDL2-2.0.so.0
+C:\Users\Andrej\OneDrive - Žilinská univerzita v Žiline\Documents\GitHub\GameOfLifeCSharp\Release\runtimes\linux-x64\native\libopenal.so.1
+C:\Users\Andrej\OneDrive - Žilinská univerzita v Žiline\Documents\GitHub\GameOfLifeCSharp\Release\runtimes\osx\native\libSDL2.dylib
+C:\Users\Andrej\OneDrive - Žilinská univerzita v Žiline\Documents\GitHub\GameOfLifeCSharp\Release\runtimes\osx\native\libopenal.1.dylib
+C:\Users\Andrej\OneDrive - Žilinská univerzita v Žiline\Documents\GitHub\GameOfLifeCSharp\Release\runtimes\win-x64\native\SDL2.dll
+C:\Users\Andrej\OneDrive - Žilinská univerzita v Žiline\Documents\GitHub\GameOfLifeCSharp\Release\runtimes\win-x64\native\soft_oal.dll
+C:\Users\Andrej\OneDrive - Žilinská univerzita v Žiline\Documents\GitHub\GameOfLifeCSharp\Release\runtimes\win-x86\native\SDL2.dll
+C:\Users\Andrej\OneDrive - Žilinská univerzita v Žiline\Documents\GitHub\GameOfLifeCSharp\Release\runtimes\win-x86\native\soft_oal.dll

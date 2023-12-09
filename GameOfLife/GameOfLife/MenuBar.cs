@@ -10,12 +10,12 @@ using Color = Microsoft.Xna.Framework.Color;
 namespace GameOfLife;
 
 public class MenuBar {
-
     private const float AnimationSpeed = 8f;
     private const int TopPart = 20;
+    private const int SideButtonsWidth = 30;
     private const int XSpacing = 20;
     private const int YSpacing = 45;
-    private const int XOffset = 20;
+    private const int XOffset = 50;
     private const int InvalidIndex = -1;
     private const int Border = 5;
     
@@ -24,24 +24,26 @@ public class MenuBar {
     });
 
     private readonly List<(Shape shape, Texture2D texture)> _shapeTextures = new();  
-    private int Max => (_shapeTextures.Count < _shapeCountOnScreen ? _shapeTextures.Count : _shapeCountOnScreen) + _stateIndex;
+    private int Max => (_shapeTextures.Count < _shapeCountOnScreen ? _shapeTextures.Count : _shapeCountOnScreen) + _startIndex;
     
-    private Texture2D _menuBackground;
-    private Texture2D _topPartSeparator;
+    private Texture2D? _menuBackground = null;
     private Vector2 _pos;
     private Vector2 _inicialPos;
     private Vector2 _dimensions;
+    private readonly Button 
+        _leftButton;
+    private readonly Button _rightButton;
     private readonly int _textureSize;
     private readonly int _shapeCountOnScreen;
     //state of the menu bar (closed opening opened closing)
     private int _state = 0;
     //index of the first shape in the menu
-    private int _stateIndex = 0;
+    private int _startIndex = 0;
     //index of selected shape
     private int _selectedShape = InvalidIndex;
     private float _peak;
     private float _sides;
-    private bool _pressedLMB = false;
+    private bool _lmbPressedState = false;
 
 
     public MenuBar(int x, int y, int width, int height) {
@@ -53,22 +55,56 @@ public class MenuBar {
         _textureSize = (int)(_dimensions.Y - YSpacing * 2);
         int widthIn = width - 2 * XOffset;
         _shapeCountOnScreen = (widthIn + XSpacing) / (_textureSize + XSpacing);
+        
+        int triangleHeight = 30; 
+        _leftButton = new Button(
+            x: 0,
+            y: y + TopPart,
+            width: SideButtonsWidth,
+            height: height - TopPart,
+            func: () => {
+                if (_startIndex > 0)
+                    _startIndex--;
+            },
+            triangle: new[] {
+                new Vector2(SideButtonsWidth / 4, height / 2),
+                new Vector2(SideButtonsWidth / 4 * 3, height / 2 - triangleHeight / 2),
+                new Vector2(SideButtonsWidth / 4 * 3, height / 2 + triangleHeight / 2)
+            }
+        );
+        _rightButton = new Button(
+            x: width - SideButtonsWidth,
+            y: y + TopPart,
+            width: SideButtonsWidth,
+            height: height - TopPart,
+            func: () => {
+                if (_startIndex < _shapeTextures.Count)
+                    _startIndex++;
+            },
+            triangle: new[] {
+                new Vector2(SideButtonsWidth / 4, height / 2 - triangleHeight / 2),
+                new Vector2(SideButtonsWidth / 4 * 3, height / 2),
+                new Vector2(SideButtonsWidth / 4, height / 2 + triangleHeight / 2)
+            }
+        );
     }
 
     public void LoadContent(GraphicsDevice gd) {
         int alpha = 196;
-        _topPartSeparator = new Texture2D(gd, 1, 1);
-        _topPartSeparator.SetData(new [] { new Color(Color.Gray * 0.25f, alpha)});
         _menuBackground = new Texture2D(gd, 1, 1);
         _menuBackground.SetData(new[] { new Color(Color.White * 0.25f, alpha) });
         _shapeTextures.AddRange( new [] {
             (Shape.Glider, Func.ArrayToTexture(Shape.Glider.GetShape(true) ,gd)),
-            (Shape.SpaceShip,Func.ArrayToTexture(Shape.SpaceShip.GetShape(true), gd))
+            (Shape.SpaceShip,Func.ArrayToTexture(Shape.SpaceShip.GetShape(true), gd)),
+            (Shape.LWSS, Func.ArrayToTexture(Shape.LWSS.GetShape(true) ,gd)),
+            (Shape.MWSS, Func.ArrayToTexture(Shape.MWSS.GetShape(true) ,gd)),
+            (Shape.HWSS, Func.ArrayToTexture(Shape.HWSS.GetShape(true) ,gd)),
+            (Shape.GosperGliderGun, Func.ArrayToTexture(Shape.GosperGliderGun.GetShape(true) ,gd)),
+            (Shape.SimkinGliderGun, Func.ArrayToTexture(Shape.SimkinGliderGun.GetShape(true), gd))
         });
-        
     }
 
-    public void Update(bool paused, Cursor cursor) {
+    public void Update(bool paused, Cursor cursor, GraphicsDevice gd) {
 
         if (!paused && _state is 1 or 2 or 3) {
             _state = 0;
@@ -76,32 +112,47 @@ public class MenuBar {
         }
 
         var mousePos = cursor.MState.Position;
-        if (IsInsideTopPart(mousePos) && Mouse.GetState().LeftButton == ButtonState.Pressed && States[_state] == State.Still) {
+        Rectangle mousePosRect = new(mousePos, new Point(1, 1));
+        bool lmbPressedNow = Mouse.GetState().LeftButton == ButtonState.Pressed;
+        if (IsInsideTopPart(mousePos) && lmbPressedNow && !_lmbPressedState && States[_state] == State.Still) {
             MoveState();
         }
 
+        if (_leftButton.IsColliding(mousePosRect) && lmbPressedNow && !_lmbPressedState) {
+            _leftButton.Click();
+        } else if (_rightButton.IsColliding(mousePosRect) && lmbPressedNow && !_lmbPressedState) {
+            _rightButton.Click();
+        }
+        _lmbPressedState = lmbPressedNow;
+        
+
         if (IsInside(mousePos)) {
             bool isHovering = false;
-            for (int i = _stateIndex; i < Max; i++) {
+            for (int i = _startIndex; i < Max; i++) {
                 Rectangle rMousePos = new(mousePos, new Point(1, 1));
-                if (!new Rectangle(XOffset + i * (_textureSize + XSpacing), (int)(_pos.Y + YSpacing), _textureSize, _textureSize)
+                if (!new Rectangle(XOffset + (i - _startIndex) * (_textureSize + XSpacing), (int)(_pos.Y + YSpacing), _textureSize, _textureSize)
                         .Intersects(rMousePos)) continue;
                 
                 _selectedShape = i;
                 isHovering = true;
                 break;
             }
-
+            
             if (!isHovering) {
                 _selectedShape = InvalidIndex;
-            } else if (isHovering && cursor.MState.LeftButton == ButtonState.Pressed && !_pressedLMB) {
-                _pressedLMB = true;
+            }
+            else if (isHovering && 
+                       cursor.MState.LeftButton == ButtonState.Pressed &&
+                       !_lmbPressedState && States[_state] is not (State.MovingDown or State.MovingUp))
+            {
+                _lmbPressedState = true;
                 cursor.HoldingShape = _shapeTextures[_selectedShape].shape;
+                cursor.UpdateTexture(gd);
                 MoveState();
             }
 
-            if (_pressedLMB && cursor.MState.LeftButton == ButtonState.Released) {
-                _pressedLMB = false;
+            if (_lmbPressedState && cursor.MState.LeftButton == ButtonState.Released) {
+                _lmbPressedState = false;
             }
         }
         else {
@@ -110,6 +161,8 @@ public class MenuBar {
 
         if (States[_state] == State.MovingUp) {
             _pos.Y -= AnimationSpeed;
+            _leftButton.Y -= AnimationSpeed;
+            _rightButton.Y -= AnimationSpeed;
             
             if (_pos.Y <= _inicialPos.Y - _dimensions.Y + TopPart) {
                 MoveState();
@@ -117,6 +170,8 @@ public class MenuBar {
         }
         else if (States[_state] == State.MovingDown) {
             _pos.Y += AnimationSpeed;
+            _leftButton.Y += AnimationSpeed;
+            _rightButton.Y += AnimationSpeed;
 
             if (_pos.Y >= _inicialPos.Y) {
                 MoveState();
@@ -125,6 +180,10 @@ public class MenuBar {
     }
 
     public void Draw(SpriteBatch sb, GraphicsDevice gd) {
+        if (_menuBackground is null) {
+            throw new NullReferenceException("Class " +  this.GetType() + " wasn't initialized");
+        }
+        
         sb.Begin(samplerState: SamplerState.PointClamp);
         sb.Draw(_menuBackground, _pos, null, Color.White, 0f,
             Vector2.Zero, _dimensions, SpriteEffects.None, 0f);
@@ -142,33 +201,42 @@ public class MenuBar {
 
         State nextState = States[(_state + 1) % 4];
         State nowState = States[_state];
-
-        VertexPositionColor[] triangleVertices = new VertexPositionColor[3];
         
+        //todo prerobit totok tu fujky fujky
         if (nextState == State.MovingUp || nowState == State.MovingUp) {
             _peak = TopPart / 4f;
             _sides = TopPart / 4f * 3;
-            new VertexPositionColor[] {
-                new(new Vector3(MathF.Round(_dimensions.X / 2f), MathF.Round(_pos.Y + _peak), 0f), color),
-                new(new Vector3(MathF.Round(_dimensions.X / 2f + 10), MathF.Round(_pos.Y + _sides), 0f), color),
-                new(new Vector3(MathF.Round(_dimensions.X / 2f - 10), MathF.Round(_pos.Y + _sides), 0f), color),
-            }.CopyTo(triangleVertices, 0);
+            Func.DrawTriangle(
+                color,
+                new Vector2(MathF.Round(_dimensions.X / 2f), MathF.Round(_pos.Y + _peak)),
+                new Vector2(MathF.Round(_dimensions.X / 2f + 10), MathF.Round(_pos.Y + _sides)),
+                new Vector2(MathF.Round(_dimensions.X / 2f - 10), MathF.Round(_pos.Y + _sides)),
+                sb
+            );
 
         } else if (nextState == State.MovingDown || nowState == State.MovingDown) {
             _peak = TopPart / 4f * 3;
             _sides = TopPart / 4f; 
-            new VertexPositionColor[] {
-                new(new Vector3(MathF.Round(_dimensions.X / 2f - 10), MathF.Round(_pos.Y + _sides), 0f), color),
-                new(new Vector3(MathF.Round(_dimensions.X / 2f + 10), MathF.Round(_pos.Y + _sides), 0f), color),
-                new(new Vector3(MathF.Round(_dimensions.X / 2f), MathF.Round(_pos.Y + _peak), 0f), color),
-            }.CopyTo(triangleVertices, 0);;
+            Func.DrawTriangle(
+                color,
+                new Vector2(MathF.Round(_dimensions.X / 2f - 10), MathF.Round(_pos.Y + _sides)),
+                new Vector2(MathF.Round(_dimensions.X / 2f + 10), MathF.Round(_pos.Y + _sides)),
+                new Vector2(MathF.Round(_dimensions.X / 2f), MathF.Round(_pos.Y + _peak)),
+                sb
+            );
+        }
+
+
+        if (_startIndex > 0) {
+            _leftButton.Draw(sb);
+        }
+        if (_startIndex + _shapeCountOnScreen < _shapeTextures.Count) {
+            _rightButton.Draw(sb);
         }
         
-        sb.GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleList, triangleVertices, 0, 1);
-        
-        for (int i = 0; i < Max; i++) {
+        for (int i = _startIndex; i < Max; i++) {
             
-            var pos = new Vector2(XOffset + i * (_textureSize + XSpacing), _pos.Y + YSpacing);
+            var pos = new Vector2(XOffset + (i - _startIndex )* (_textureSize + XSpacing), _pos.Y + YSpacing);
             var texture = _shapeTextures[i].texture;
             float scale = MathF.Round((float)_textureSize / texture.Width);
             
@@ -199,6 +267,7 @@ public class MenuBar {
 
     public bool IsInside(Point p) {
         return IsInside(p.X, p.Y);
+        
     }
 
     public bool IsInside(int x, int y) {
@@ -223,4 +292,3 @@ public class MenuBar {
 public enum State {
     Still, MovingDown, MovingUp
 }
-

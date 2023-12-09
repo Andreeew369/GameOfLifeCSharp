@@ -1,1 +1,3 @@
 Source File,Dest File,Processor Type,Content Type,Source File Size,Dest File Size,Build Seconds
+"C:/Users/Andrej/OneDrive - Žilinská univerzita v Žiline/Documents/GitHub/GameOfLifeCSharp/GameOfLife/GameOfLife/Content/Icon.bmp","C:/Users/Andrej/OneDrive - Žilinská univerzita v Žiline/Documents/GitHub/GameOfLifeCSharp/GameOfLife/GameOfLife/Content/bin/DesktopGL/Icon.xnb","TextureProcessor","Texture2DContent",3738,3685,0.1073976
+"C:/Users/Andrej/OneDrive - Žilinská univerzita v Žiline/Documents/GitHub/GameOfLifeCSharp/GameOfLife/GameOfLife/Content/Icon.ico","C:/Users/Andrej/OneDrive - Žilinská univerzita v Žiline/Documents/GitHub/GameOfLifeCSharp/GameOfLife/GameOfLife/Content/bin/DesktopGL/Icon.xnb","TextureProcessor","Texture2DContent",3782,3685,0.0043482

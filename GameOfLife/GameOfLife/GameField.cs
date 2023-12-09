@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -30,8 +31,7 @@ public class GameField {
         //_world[2, 2].IsAlive = true;
         //_world[3, 2].IsAlive = true;
         //_world[4, 2].IsAlive = true;
-
-
+        
         _worldBuffer = DeepClone(_world);
     }
 

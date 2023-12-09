@@ -37,7 +37,7 @@ public class GameOfLife : Game {
         _gameField = new GameField();
         _menuBar = new MenuBar(0, Height, Width, Height / 3);
         _cursor = new Cursor();
-
+        
         // Random rand = new Random();
         // int[,] array = new int[5,5];
         // for (int i = 0; i < 5; i++) {
@@ -63,6 +63,7 @@ public class GameOfLife : Game {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
         _gameField.LoadContent(GraphicsDevice, Content);
         _menuBar.LoadContent(GraphicsDevice);
+        _cursor.LoadContent(GraphicsDevice);
     }
 
     protected override void Update(GameTime gameTime) {
@@ -71,7 +72,7 @@ public class GameOfLife : Game {
             return;
         }
         
-        _cursor.Update();
+        _cursor.Update(GraphicsDevice);
         
         if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed ||
             Keyboard.GetState().IsKeyDown(Keys.Escape))
@@ -103,6 +104,7 @@ public class GameOfLife : Game {
             else if (mouseState.RightButton == ButtonState.Pressed && !_clickedOnMenu) {
                 if (_cursor.HoldingShape is not Shape.Cell) {
                     _cursor.HoldingShape = Shape.Cell;
+                    _cursor.UpdateTexture(GraphicsDevice);
                 }
                 else {
                     _gameField.SetCellState(mouseState.X / Cell.Size - 1, mouseState.Y / Cell.Size - 1, false);
@@ -115,7 +117,7 @@ public class GameOfLife : Game {
             
             
         }
-        _menuBar.Update(_paused, _cursor);
+        _menuBar.Update(_paused, _cursor, GraphicsDevice);
 
 
         _timeElapsed += (float)gameTime.ElapsedGameTime.TotalSeconds;
@@ -139,7 +141,9 @@ public class GameOfLife : Game {
         _gameField.Draw(_spriteBatch, this._paused);
         if (_paused) {
             _menuBar.Draw(_spriteBatch, GraphicsDevice);
-            _cursor.Draw(_spriteBatch, GraphicsDevice);
+            if (!_menuBar.IsInside(_cursor.MState.Position)) {
+                _cursor.Draw(_spriteBatch, GraphicsDevice);
+            }
         }
         
         

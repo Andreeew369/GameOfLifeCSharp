@@ -17,40 +17,71 @@ public class Cursor {
     }
     public MouseState MState => Mouse.GetState();
     private Shape _holdingShape = Shape.Cell;
+    private Texture2D? _holdingShapeTexture = null;
     private int[,] _holdingShapeArray;
     private bool _prevRightLeftState = false;
     private bool _prevUpDownState = false;
+    private long _scrollwheel = 0;
 
     public Cursor() {
         _holdingShapeArray = _holdingShape.GetShape(false);
     }
 
-    public void Update() {
+    public void LoadContent(GraphicsDevice gd) {
+        UpdateTexture(gd);
+    }
+
+    public void UpdateTexture(GraphicsDevice gd) {
+        _holdingShapeTexture = Func.ArrayToTexture(_holdingShapeArray, gd, new Color(255,255,255) * 0.5f);
+    }
+ 
+    public void Update(GraphicsDevice gd) {
         _pos = Mouse.GetState().Position.ToVector2();
+        bool update = false;
         bool currentRightLeftState = Keyboard.GetState().IsKeyDown(Keys.Left) || Keyboard.GetState().IsKeyDown(Keys.Right);
         if (!_prevRightLeftState && currentRightLeftState) {
             _holdingShapeArray = Func.FlipArray(_holdingShapeArray, true);
+            update = true;
         }
         _prevRightLeftState = currentRightLeftState;
         
         bool currentUpDownState = Keyboard.GetState().IsKeyDown(Keys.Up) || Keyboard.GetState().IsKeyDown(Keys.Down);
         if (!_prevUpDownState && currentUpDownState) {
             _holdingShapeArray = Func.FlipArray(_holdingShapeArray, false);
+            update = true;
         }
         _prevUpDownState = currentUpDownState;
-        
+
+        long scrollWheelNow = Mouse.GetState().ScrollWheelValue;
+        if (_scrollwheel < scrollWheelNow) {
+            _holdingShapeArray = Func.RotateArray(_holdingShapeArray, true);
+            update = true;
+        } else if (_scrollwheel > scrollWheelNow) {
+            _holdingShapeArray = Func.RotateArray(_holdingShapeArray, false);
+            update = true;
+        }
+        _scrollwheel = scrollWheelNow;
+
+        if (update) {
+            _holdingShapeTexture = Func.ArrayToTexture(_holdingShapeArray, gd, new Color(255,255,255) * 0.5f);
+        }
+
     }
 
     public void Draw(SpriteBatch sb, GraphicsDevice gd) {
+        if (_holdingShapeTexture is null) {
+            throw new NullReferenceException("Content of {} class wasn't loaded.");
+        }
+        
         if (IsInside(GameOfLife.Bounds)) {
             sb.Begin(samplerState: SamplerState.PointClamp);
             
-            Texture2D texture = Func.ArrayToTexture(_holdingShapeArray, gd, new Color(255,255,255) * 0.5f);
+            // Texture2D texture = Func.ArrayToTexture(_holdingShapeArray, gd, new Color(255,255,255) * 0.5f);
             Vector2 pos = Func.GetIndexes(_pos) * Cell.Size;
             pos.X += Cell.Size;
             pos.Y += Cell.Size;
             sb.Draw(
-                texture: texture,
+                texture: _holdingShapeTexture,
                 position: pos,
                 sourceRectangle: null,
                 color: Color.White,
